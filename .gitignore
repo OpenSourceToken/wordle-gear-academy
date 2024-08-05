@@ -1,8 +1,8 @@
-session/target/
-session/.binpath
+session-proxy/target/
+session-proxy/.binpath
 
-wordle/target/
-wordle/.binpath
+wordle-game/target/
+wordle-game/.binpath
 
 target/
 Cargo.lock
