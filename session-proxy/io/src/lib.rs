@@ -1,6 +1,6 @@
 #![no_std]
 use gmeta::{InOut, Metadata};
-use gstd::prelude::*;
+use gstd::{collections::HashMap, prelude::*, ActorId, MessageId};
 
 // the metadata to be used by the [IDEA](https://idea.gear-tech.io/programs?node=wss%3A%2F%2Ftestnet.vara.network) portal.
 #[derive(Debug, Default, Clone, Encode, Decode, TypeInfo)]
@@ -8,41 +8,77 @@ pub struct WordleMetadata;
 
 impl Metadata for WordleMetadata {
     type Init = ();
-    type Handle = InOut<Action, Event>;
+    type Handle = InOut<Action, SessionStatus>;
     type Others = ();
     type Reply = ();
     type Signal = ();
-    type State = ();
+    type State = InOut<StateQuery, StateQueryReply>;
 }
 
-#[derive(Debug, Clone, Encode, Decode, TypeInfo, PartialEq)]
+//  Id of a User initiating the action is Key, Value is Session.
+// pub type State = Vec<(ActorId, Session)>;
+pub type State = HashMap<ActorId, Session>;
+
+type SentMessageId = MessageId;
+type OriginalMessageId = MessageId;
+
+#[derive(Debug, Clone, Encode, Decode, TypeInfo, PartialEq, Eq)]
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
-pub enum MessageAction {
-    // arbitrary actions should be supported in the dApp (defined by dApp author)
-    Hello,
-    HowAreYou,
-    MakeRandomNumber { range: u8 },
+pub struct Session {
+    // pub target_program_id: ActorId, // target program address
+    pub msg_ids: (SentMessageId, OriginalMessageId), // tuple containing the identifier of a message sent to a Target program, the identifier of a message current program.
+    pub session_status: SessionStatus,
+    pub tries_number: u8,
 }
 
-#[derive(Debug, Clone, Encode, Decode, TypeInfo, PartialEq)]
+#[derive(Debug, Clone, Encode, Decode, TypeInfo, PartialEq, Eq)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub enum SessionStatus {
+    None,
+    GameStarted,
+    Waiting,
+    MessageSent,
+    GameOver(Outcome),
+    WordChecked {
+        user: ActorId,
+        correct_positions: Vec<u8>,
+        contained_in_word: Vec<u8>,
+    },
+    InvalidWord,
+    NoReplyReceived,
+}
+
+#[derive(Debug, Clone, Encode, Decode, TypeInfo, PartialEq, Eq)]
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
 pub enum Action {
-    SendMessage(MessageAction), // action to send a message to the target program
-    CheckReply,                 // action to check for a response
+    StartGame,
+    CheckWord(String),
+    CheckGameStatus,
 }
 
-#[derive(Debug, Clone, Encode, Decode, TypeInfo, PartialEq)]
+#[derive(Debug, Clone, Encode, Decode, TypeInfo, PartialEq, Eq)]
 #[codec(crate = gstd::codec)]
 #[scale_info(crate = gstd::scale_info)]
-pub enum Event {
-    // arbitrary replies to the action
-    Hello,
-    Fine,
-    Number(u8),
-    MessageSent,        // event confirming successful message sent from Proxy to Target
-    MessageAlreadySent, // event confirming successful message sent from Proxy to Target
-    WrongStatus,
-    NoReplyReceived,
+pub enum Outcome {
+    Win,
+    Lose,
+}
+
+#[derive(Debug, Clone, Encode, Decode, TypeInfo, PartialEq, Eq)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub enum StateQuery {
+    All,
+    Player(ActorId),
+}
+
+#[derive(Debug, Clone, Encode, Decode, TypeInfo, PartialEq, Eq)]
+#[codec(crate = gstd::codec)]
+#[scale_info(crate = gstd::scale_info)]
+pub enum StateQueryReply {
+    All(Vec<ActorId>),
+    Game(Session),
 }

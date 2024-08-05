@@ -35,3 +35,12 @@ Wordle程序返回关于猜测准确性和字母位置的反馈。
 
 游戏会话程序需要机制来存储有关先前移动的数据并跟踪时间。
 通过数据交换和响应处理与Wordle程序的高效交互至关重要。
+
+![alt text](1722858011123.png)
+
+# 部署
+https://idea.gear-tech.io/
+wss://testnet.vara.network
+
+![alt text](1722860507969.jpg)
+![alt text](1720185307791.jpg)

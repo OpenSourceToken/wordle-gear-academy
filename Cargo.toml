@@ -23,3 +23,4 @@ gear-wasm-builder = { git = "https://github.com/gear-tech/gear.git", tag = "v1.4
 parity-scale-codec = { version = "3", default-features = false }
 scale-info = { version = "2", default-features = false }
 session-proxy-io.path = "session-proxy/io"
+wordle-game-io.path = "wordle-game/io"

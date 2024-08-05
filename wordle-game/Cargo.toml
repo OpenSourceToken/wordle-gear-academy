@@ -11,12 +11,15 @@ publish.workspace = true
 gstd.workspace = true
 parity-scale-codec = { workspace = true, default-features = false }
 scale-info = { workspace = true, default-features = false }
+wordle-game-io.workspace = true
 
 [build-dependencies]
 gear-wasm-builder.workspace = true
+wordle-game-io.workspace = true
 
 [dev-dependencies]
 gstd.workspace = true
 gtest.workspace = true
 parity-scale-codec = { workspace = true, default-features = false }
 scale-info = { workspace = true, default-features = false }
+wordle-game-io.workspace = true
