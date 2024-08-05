@@ -1,0 +1,8 @@
+session/target/
+session/.binpath
+
+wordle/target/
+wordle/.binpath
+
+target/
+Cargo.lock
