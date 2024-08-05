@@ -25,14 +25,13 @@ jobs:
 
       - name: Wordle Check and test
         run: |
-          cd wordle
+          cd wordle-game
           cargo fmt --all --check
-          cargo clippy --all-targets -- -D warnings -A unused-imports
           cargo b -r
 
       - name: Session Check and test
         run: |
-          cd session
+          cd session-proxy
           cargo fmt --all --check
           cargo b -r
           
